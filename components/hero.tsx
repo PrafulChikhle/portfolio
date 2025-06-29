@@ -51,7 +51,7 @@ export default function Hero() {
             className="flex space-x-6"
           >
             {[
-              { icon: Instagram, href: "#", label: "Instagram" },
+              { icon: Instagram, href: "https://www.instagram.com/praful_pr17", label: "Instagram" },
               { icon: Linkedin, href: "https://www.linkedin.com/in/praful-chikhle-29010486/", label: "LinkedIn" },
               { icon: Mail, href: "mailto:prafulchikhle20@example.com", label: "Email" },
             ].map(({ icon: Icon, href, label }) => (

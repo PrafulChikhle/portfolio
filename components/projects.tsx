@@ -12,7 +12,7 @@ const projects = [
     title: "Self Service Portal",
     description:
       "Developed a robust and user-friendly Self-Service Portal enabling seamless Active Directory (AD) password management.",
-    image: "./placeholder.svg?height=300&width=500",
+    image: "./images/SSP.jpg?height=300&width=500",
     tags: ["AngularJS", "JavaScript", "Grunt", "HTML5", "CSS3", "Java"],
     demo: "#",
     details:
@@ -47,7 +47,7 @@ const projects = [
     title: "Core Components and Boilerplate",
     description:
       "Built a comprehensive UI Components Library featuring a wide range of reusable, customizable, and consistent widgets to streamline frontend development and promote design uniformity across applications.",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/boilerplate.jpeg?height=300&width=500",
     tags: ["Angular 13+", "Typescript", "UI Components", "Design System"],
     github: "#",
     demo: "#",
@@ -59,7 +59,7 @@ const projects = [
     title: "Content Management & Experience Portal for Sales Team",
     description:
       "Designed and delivered a centralized Content Management Portal tailored for the sales team, serving as both an operational hub and a digital experience center to effectively showcase ignio's capabilities to clients.",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/experience.png?height=300&width=500",
     tags: ["MongoDB", "Angular", "Node.js", "Express.js", "REST API"],
     github: "#",
     demo: "#",
@@ -71,7 +71,7 @@ const projects = [
     title: "ignio Batch Analytics – Real-Time Job Monitoring",
     description:
       "Architected and developed a Batch Analytics Dashboard within ignio, enabling real-time visibility into enterprise job processes and batch operations.",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/batch-processing.jpg?height=300&width=500",
     tags: [
       "Angular 2+",
       "Websocket",
@@ -121,7 +121,7 @@ const projects = [
     title: "Data Setup Application",
     description:
       "Intelligent analytics dashboard with machine learning insights, predictive modeling, and automated report generation.",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/data-setup.jpg?height=300&width=500",
     tags: ["Angular 16+", "Typescript", "Golang", "ECharts"],
     github: "#",
     demo: "#",

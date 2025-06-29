@@ -13,7 +13,7 @@ const blogPosts = [
       "Design Patterns to Avoid in Angular: Modern Alternatives for Better Code",
     excerpt:
       "Angular’s modern architecture and built-in features make many of these patterns unnecessary or even counterproductive. This article explores which patterns to avoid and what to use instead.",
-    image: "/placeholder.svg?height=200&width=350",
+    image: "/images/medium.png?height=200&width=350",
     date: "2025-05-12",
     readTime: "3 min read",
     category: "Design Patterns",
@@ -26,7 +26,7 @@ const blogPosts = [
       "Design Patterns: Java vs Angular/TypeScript : A Practical Comparison",
     excerpt:
       "Design patterns are essential solutions to common software design problems, but their implementation varies significantly between Java and Angular/TypeScript due to different programming paradigms and environments.",
-    image: "/placeholder.svg?height=200&width=350",
+    image: "/images/medium.png?height=200&width=350",
     date: "2025-05-1",
     readTime: "5 min read",
     category: "Design Patterns",
@@ -38,7 +38,7 @@ const blogPosts = [
     title: "Web Workers Aren’t Magic",
     excerpt:
       "Web Workers Aren’t Magic: Understanding Browser’s Concurrent Request Limits in Angular Applications",
-    image: "/placeholder.svg?height=200&width=350",
+    image: "/images/medium.png?height=200&width=350",
     date: "2025-05-1",
     readTime: "2 min read",
     category: "Web workers",
@@ -51,7 +51,7 @@ const blogPosts = [
       "Why Complex Calculations Belong on the Backend: A Comprehensive Guide",
     excerpt:
       "In modern web applications, deciding where to perform calculations in frontend or backend is a crucial architectural decision. While it might seem convenient to handle calculations on the UI, there are compelling reasons to move complex computations to the backend.",
-    image: "/placeholder.svg?height=200&width=350",
+    image: "/images/medium.png?height=200&width=350",
     date: "2025-05-10",
     readTime: "2 min read",
     category: "Complex Calculations",
@@ -106,7 +106,7 @@ export default function Blog() {
                 <div className="h-full rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden">
                   <div className="relative h-48 overflow-hidden">
                     <Image
-                      src={post.image || "/placeholder.svg"}
+                      src={post.image || "/images/medium.png"}
                       alt={post.title}
                       width={350}
                       height={200}
