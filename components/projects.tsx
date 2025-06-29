@@ -35,7 +35,7 @@ const projects = [
     title: "Charts Library",
     description:
       "Designed and developed a powerful Reusable Charts Library using D3.js, focused on delivering modular, customizable, and performance-optimized data visualizations.",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/angular-dashboard.jpg?height=300&width=500",
     tags: ["Angular 13+", "d3.js", "Typescript", "Data Visualization"],
     github: "#",
     demo: "#",
@@ -144,7 +144,7 @@ export default function Projects() {
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-16 mt-6"
         >
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">

@@ -98,7 +98,7 @@ const experiences = [
       "<strong>Strengthened application security</strong> by fixing code vulnerabilities, enforcing secure coding practices, enhancing input validation, and improving error handling across the application stack.",
     ],
     technologies: ["Angular 2+", "TypeScript", "JavaScript", "Bootstrap"],
-    website: "#",
+    website: "https://digitate.com",
   },
   {
     id: 5,
@@ -125,7 +125,7 @@ const experiences = [
       "CSS",
       "Bootstrap",
     ],
-    website: "#",
+    website: "https://www.tcs.com/",
   },
 ];
 
@@ -140,7 +140,7 @@ export default function Experience() {
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-16 mt-6"
         >
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
