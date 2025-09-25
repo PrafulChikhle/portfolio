@@ -40,9 +40,23 @@ export default function Hero() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="text-xl text-gray-300 max-w-2xl leading-relaxed"
           >
-            Crafting exceptional digital experiences with cutting-edge technologies. Passionate about Angular, modern
-            web development, and leading high-performing teams.
+            Crafting exceptional digital experiences with cutting-edge technologies. Passionate about Angular, modern web development, and leading high-performing teams.
           </motion.p>
+
+          <div className="flex flex-row lg:flex-row justify-start items-start gap-8 text-base lg:text-lg min-w-[220px] mt-2 mb-2">
+            <div className="text-center">
+              <div className="text-3xl lg:text-4xl font-bold text-blue-400 drop-shadow-lg">50+</div>
+              <div className="text-gray-400 drop-shadow-lg">Projects</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl lg:text-4xl font-bold text-purple-400 drop-shadow-lg">15+</div>
+              <div className="text-gray-400 drop-shadow-lg">Technologies</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl lg:text-4xl font-bold text-pink-400 drop-shadow-lg">10+</div>
+              <div className="text-gray-400 drop-shadow-lg">Team Members</div>
+            </div>
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -76,41 +90,16 @@ export default function Hero() {
           transition={{ delay: 0.4, duration: 0.8 }}
           className="relative"
         >
-          <div className="relative p-8 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl" />
-            <div className="relative z-10 text-center space-y-6">
-              <div className="relative mx-auto w-48 h-48 rounded-full overflow-hidden border-4 border-white/30">
-                <Image
-                  src="/images/praful-profile.jpeg"
-                  alt="Praful Chikhle"
-                  width={200}
-                  height={200}
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">Praful Chikhle</h3>
-                <p className="text-blue-300 font-medium">Senior Technical Lead</p>
-                <p className="text-gray-300 text-sm mt-2">9+ Years Experience</p>
-              </div>
-
-              <div className="flex justify-center space-x-4 text-sm">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-400">50+</div>
-                  <div className="text-gray-400">Projects</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-400">15+</div>
-                  <div className="text-gray-400">Technologies</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-pink-400">10+</div>
-                  <div className="text-gray-400">Team Members</div>
-                </div>
-              </div>
-            </div>
+          <div
+            className="relative p-12 lg:p-20 rounded-[2.5rem] bg-white/10 backdrop-blur-md border-2 border-white/30 shadow-2xl flex flex-col justify-end items-center gap-10 min-w-[400px] min-h-[520px] lg:min-w-[520px] lg:min-h-[620px]"
+            style={{
+              backgroundImage: "url(/images/praful-profile.jpeg)",
+              backgroundSize: "cover",
+              backgroundPosition: "center top",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            {/* Removed gradient overlay from profile card */}
           </div>
         </motion.div>
       </div>
