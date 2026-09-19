@@ -1,272 +1,273 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { ExternalLink, Github, X } from "lucide-react";
-import Image from "next/image";
+import Image from "next/image"
+import { useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { Deploy, Section, SectionHead } from "@/components/chrome"
+import { PROJECTS, type Project } from "@/lib/site-data"
 
-const projects = [
-  {
-    id: 1,
-    title: "Self Service Portal",
-    description:
-      "Developed a robust and user-friendly Self-Service Portal enabling seamless Active Directory (AD) password management.",
-    image: "./images/SSP.jpg?height=300&width=500",
-    tags: ["AngularJS", "JavaScript", "Grunt", "HTML5", "CSS3", "Java"],
-    demo: "#",
-    details:
-      "Developed a robust and user-friendly Self-Service Portal enabling seamless Active Directory (AD) password management. The application empowered end users with the ability to reset or change their AD passwords independently, reducing IT support overhead and improving user productivity.",
-  },
-  {
-    id: 2,
-    title: "Graph NG Visualization Tool",
-    description:
-      "Advanced graph visualization library built on Angular with Echarts integration for complex data relationships and network analysis.",
-    image: "./images/graph-network.jpg",
-    tags: ["Angular 19", "Echarts", "Graph Theory", "WebGL"],
-    github: "#",
-    demo: "#",
-    details:
-      "A powerful visualization tool that renders complex graph structures with smooth animations, interactive nodes, and customizable layouts for network analysis and data exploration.",
-  },
-  {
-    id: 3,
-    title: "Charts Library",
-    description:
-      "Designed and developed a powerful Reusable Charts Library using D3.js, focused on delivering modular, customizable, and performance-optimized data visualizations.",
-    image: "/images/angular-dashboard.jpg?height=300&width=500",
-    tags: ["Angular 13+", "d3.js", "Typescript", "Data Visualization"],
-    github: "#",
-    demo: "#",
-    details:
-      "Designed and developed a powerful Reusable Charts Library using D3.js, focused on delivering modular, customizable, and performance-optimized data visualizations.",
-  },
-  {
-    id: 4,
-    title: "Core Components and Boilerplate",
-    description:
-      "Built a comprehensive UI Components Library featuring a wide range of reusable, customizable, and consistent widgets to streamline frontend development and promote design uniformity across applications.",
-    image: "/images/boilerplate.jpeg?height=300&width=500",
-    tags: ["Angular 13+", "Typescript", "UI Components", "Design System"],
-    github: "#",
-    demo: "#",
-    details:
-      "Built a comprehensive UI Components Library featuring a wide range of reusable, customizable, and consistent widgets to streamline frontend development and promote design uniformity across applications.",
-  },
-  {
-    id: 5,
-    title: "Content Management & Experience Portal for Sales Team",
-    description:
-      "Designed and delivered a centralized Content Management Portal tailored for the sales team, serving as both an operational hub and a digital experience center to effectively showcase ignio's capabilities to clients.",
-    image: "/images/experience.png?height=300&width=500",
-    tags: ["MongoDB", "Angular", "Node.js", "Express.js", "REST API"],
-    github: "#",
-    demo: "#",
-    details:
-      "Designed and delivered a centralized Content Management Portal tailored for the sales team, serving as both an operational hub and a digital experience center to effectively showcase ignio's capabilities to clients.",
-  },
-  {
-    id: 6,
-    title: "ignio Batch Analytics – Real-Time Job Monitoring",
-    description:
-      "Architected and developed a Batch Analytics Dashboard within ignio, enabling real-time visibility into enterprise job processes and batch operations.",
-    image: "/images/batch-processing.jpg?height=300&width=500",
-    tags: [
-      "Angular 2+",
-      "Websocket",
-      "MQTT",
-      "Java",
-      "Spring Boot",
-      "Microservices",
-    ],
-    github: "#",
-    demo: "#",
-    details:
-      "Architected and developed a Batch Analytics Dashboard within ignio, enabling real-time visibility into enterprise job processes and batch operations.",
-  },
-  {
-    id: 7,
-    title:
-      "ignio Navigator – Unified Interface with Microfrontend Architecture",
-    description:
-      "Contributed to the design and development of ignio Navigator, a centralized web application that brings together multiple ignio capabilities through a scalable microfrontend architecture.",
-    image: "/placeholder.svg?height=300&width=500",
-    tags: [
-      "Angular 2+",
-      "JasperSoft",
-      "TypeScript",
-      "Microfrontend",
-      "Web Components",
-    ],
-    github: "#",
-    demo: "#",
-    details:
-      "Contributed to the design and development of ignio Navigator, a centralized web application that brings together multiple ignio capabilities through a scalable microfrontend architecture..",
-  },
-  {
-    id: 8,
-    title: "2D Floorplan Editor & Viewer Library",
-    description:
-      "Built an interactive 2D Editor using PIXI.js for room, wall, and floor plan manipulation with high-performance graphics and responsive canvas interactions.",
-    image: "/placeholder.svg?height=300&width=500",
-    tags: ["Angular 11+", "Typescript", "OpenLayers", "PixiJS", "WebGL"],
-    github: "#",
-    demo: "#",
-    details:
-      "Built an interactive 2D Editor using PIXI.js for room, wall, and floor plan manipulation with high-performance graphics and responsive canvas interactions. Integrated OpenLayers for geospatial visualization, enabling map overlays, transformations, and synchronized coordinate views for a seamless design experience.",
-  },
-  {
-    id: 9,
-    title: "Data Setup Application",
-    description:
-      "Intelligent analytics dashboard with machine learning insights, predictive modeling, and automated report generation.",
-    image: "/images/data-setup.jpg?height=300&width=500",
-    tags: ["Angular 16+", "Typescript", "Golang", "ECharts"],
-    github: "#",
-    demo: "#",
-    details:
-      "An advanced analytics platform that leverages machine learning algorithms to provide predictive insights, anomaly detection, and automated business intelligence reporting.",
-  },
-];
+/**
+ * Module bay.
+ *
+ * Cards tilt in real 3D off pointer position (rotateX/rotateY on a perspective
+ * parent, plus a specular sheen that tracks the same coordinates). The tilt is
+ * written straight to style on pointermove — running it through React state
+ * would re-render nine cards per frame for no reason.
+ */
 
-export default function Projects() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [selectedProject, setSelectedProject] = useState<
-    (typeof projects)[0] | null
-  >(null);
+function ModuleCard({
+  p,
+  index,
+  onOpen,
+}: {
+  p: Project
+  index: number
+  onOpen: (p: Project) => void
+}) {
+  const ref = useRef<HTMLButtonElement>(null)
+  const sheen = useRef<HTMLSpanElement>(null)
+  const reduced = useReducedMotion()
+
+  const onMove = (e: React.PointerEvent) => {
+    if (reduced) return
+    const el = ref.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const x = (e.clientX - r.left) / r.width
+    const y = (e.clientY - r.top) / r.height
+    el.style.transform = `perspective(900px) rotateY(${(x - 0.5) * 9}deg) rotateX(${(0.5 - y) * 9}deg) translateZ(6px)`
+    if (sheen.current) {
+      sheen.current.style.background = `radial-gradient(420px circle at ${x * 100}% ${y * 100}%, rgba(255,176,0,0.13), transparent 60%)`
+    }
+  }
+
+  const reset = () => {
+    const el = ref.current
+    if (el) el.style.transform = ""
+    if (sheen.current) sheen.current.style.background = "transparent"
+  }
 
   return (
-    <section id="projects" ref={ref} className="py-20 px-6">
-      <div className="container mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16 mt-6"
+    <Deploy delay={Math.min(index * 0.05, 0.3)}>
+      <button
+        ref={ref}
+        data-module={p.id}
+        data-target
+        data-label={`OPEN ${p.id}`}
+        onPointerMove={onMove}
+        onPointerLeave={reset}
+        onClick={() => onOpen(p)}
+        aria-label={`Open module ${p.id}: ${p.title}`}
+        className="bracket group h-full w-full text-left transition-[transform,border-color] duration-200 will-change-transform hover:border-[var(--rule-strong)]"
+      >
+        <span
+          ref={sheen}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-10 transition-[background] duration-200"
+        />
+
+        {/* module header */}
+        <span
+          className="flex items-center justify-between border-b px-3 py-2"
+          style={{ borderColor: "var(--rule)" }}
         >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Featured Projects
-            </span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            A showcase of my recent work, featuring modern web applications,
-            data visualization tools, and enterprise solutions.
-          </p>
-        </motion.div>
+          <span className="label label-sig tnum">{p.id}</span>
+          <span className="label tnum">{p.year}</span>
+        </span>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              whileHover={{ y: -10 }}
-              className="group cursor-pointer"
-              onClick={() => setSelectedProject(project)}
-            >
-              <div className="relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300">
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={project.image || "/placeholder.svg"}
-                    alt={project.title}
-                    width={500}
-                    height={300}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                </div>
+        {/* imagery */}
+        <span className="relative block aspect-[16/10] overflow-hidden">
+          <Image
+            src={p.image}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+            className="object-cover grayscale-[0.85] contrast-125 transition-all duration-700 group-hover:scale-[1.06] group-hover:grayscale-[0.3]"
+          />
+          <span
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(6,7,10,0.25) 0%, rgba(6,7,10,0.55) 55%, rgba(10,12,16,0.97) 100%)",
+            }}
+          />
+          {/* scan texture, so imagery reads as sensor capture not stock photo */}
+          <span
+            className="pointer-events-none absolute inset-0 opacity-40"
+            style={{
+              background:
+                "repeating-linear-gradient(180deg, transparent 0 3px, rgba(0,0,0,0.5) 3px 4px)",
+            }}
+          />
+        </span>
 
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-gray-300 text-sm mb-4 line-clamp-3">
-                    {project.description}
-                  </p>
+        {/* body */}
+        <span className="block p-4 md:p-5">
+          <span className="font-display block text-[15px] font-600 uppercase leading-snug tracking-[0.04em] text-[var(--txt)] transition-colors group-hover:text-[var(--sig)]">
+            {p.title}
+          </span>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1 text-xs font-medium bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+          <span className="mt-2.5 block text-xs leading-relaxed text-[var(--txt-dim)]">
+            {p.summary}
+          </span>
 
-                  <div className="flex space-x-4"></div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+          <span className="mt-4 flex flex-wrap gap-1.5">
+            {p.tags.slice(0, 4).map((t) => (
+              <span
+                key={t}
+                className="label border px-1.5 py-0.5"
+                style={{ borderColor: "var(--rule)", color: "var(--txt-faint)" }}
+              >
+                {t}
+              </span>
+            ))}
+            {p.tags.length > 4 && (
+              <span className="label px-1 py-0.5 text-[var(--sig-dim)]">
+                +{p.tags.length - 4}
+              </span>
+            )}
+          </span>
+
+          <span className="mt-4 flex items-center gap-2 text-[10px] tracking-[0.18em] text-[var(--ice)] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            INSPECT
+            <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+          </span>
+        </span>
+      </button>
+    </Deploy>
+  )
+}
+
+/* ------------------------------- detail view ------------------------------ */
+
+function ModuleDialog({ p, onClose }: { p: Project; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    closeRef.current?.focus()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+    document.addEventListener("keydown", onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.removeEventListener("keydown", onKey)
+      document.body.style.overflow = prev
+    }
+  }, [onClose])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[80] flex items-center justify-center p-4 md:p-8"
+      style={{ background: "rgba(3,4,6,0.86)" }}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="module-title"
+    >
+      <motion.div
+        initial={{ clipPath: "inset(48% 0 48% 0)", opacity: 0 }}
+        animate={{ clipPath: "inset(0% 0 0% 0)", opacity: 1 }}
+        exit={{ clipPath: "inset(48% 0 48% 0)", opacity: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className="bracket max-h-[88vh] w-full max-w-3xl overflow-y-auto"
+      >
+        <div
+          className="sticky top-0 z-10 flex items-center justify-between border-b px-4 py-2.5 backdrop-blur"
+          style={{ borderColor: "var(--rule)", background: "rgba(10,12,16,0.94)" }}
+        >
+          <span className="label label-sig tnum">MODULE {p.id}</span>
+          <button
+            ref={closeRef}
+            onClick={onClose}
+            className="label border px-2 py-1 transition-colors hover:text-[var(--alert)]"
+            style={{ borderColor: "var(--rule)" }}
+            aria-label="Close module detail"
+          >
+            ESC ✕
+          </button>
         </div>
 
-        {/* Project Modal */}
-        {selectedProject && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
-            onClick={() => setSelectedProject(null)}
+        <div className="relative aspect-[21/9]">
+          <Image
+            src={p.image}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 100vw, 768px"
+            className="object-cover grayscale-[0.4]"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(180deg, transparent 30%, rgba(10,12,16,0.97) 100%)",
+            }}
+          />
+        </div>
+
+        <div className="p-6 md:p-8">
+          <div className="mb-3 flex items-center gap-3">
+            <span className="label tnum">{p.year}</span>
+            <span className="h-px flex-1" style={{ background: "var(--rule)" }} />
+          </div>
+
+          <h3
+            id="module-title"
+            className="font-display text-xl font-700 uppercase tracking-[0.04em] text-[var(--txt)] md:text-3xl"
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-gray-900/90 backdrop-blur-md border border-white/20 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="relative">
-                <button
-                  onClick={() => setSelectedProject(null)}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+            {p.title}
+          </h3>
+
+          <p className="mt-5 text-sm leading-[1.85] text-[var(--txt-dim)]">{p.details}</p>
+
+          <div className="mt-7">
+            <p className="label mb-3">SUBSYSTEMS</p>
+            <div className="flex flex-wrap gap-2">
+              {p.tags.map((t) => (
+                <span
+                  key={t}
+                  className="border px-2.5 py-1 text-[11px]"
+                  style={{ borderColor: "var(--rule)", color: "var(--sig-dim)" }}
                 >
-                  <X size={20} />
-                </button>
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
 
-                <div className="relative h-64 md:h-80">
-                  <Image
-                    src={selectedProject.image || "/placeholder.svg"}
-                    alt={selectedProject.title}
-                    width={800}
-                    height={400}
-                    className="w-full h-full object-cover rounded-t-2xl"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-t-2xl" />
-                </div>
+/* --------------------------------- section -------------------------------- */
 
-                <div className="p-8">
-                  <h3 className="text-3xl font-bold text-white mb-4">
-                    {selectedProject.title}
-                  </h3>
-                  <p className="text-gray-300 mb-6 leading-relaxed">
-                    {selectedProject.details}
-                  </p>
+export default function Projects() {
+  const [open, setOpen] = useState<Project | null>(null)
 
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {selectedProject.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-4 py-2 text-sm font-medium bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+  return (
+    <Section id="projects">
+      <SectionHead
+        index="02"
+        title="MODULE BAY"
+        meta={`${PROJECTS.length} UNITS`}
+        blurb="Selected systems shipped in production — visualisation engines, editors, platform libraries, and the dashboards operations teams actually live in."
+      />
 
-                  <div className="flex space-x-4"></div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {PROJECTS.map((p, i) => (
+          <ModuleCard key={p.id} p={p} index={i} onOpen={setOpen} />
+        ))}
       </div>
-    </section>
-  );
+
+      <AnimatePresence>
+        {open && <ModuleDialog p={open} onClose={() => setOpen(null)} />}
+      </AnimatePresence>
+    </Section>
+  )
 }

@@ -1,147 +1,207 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { useInView } from "framer-motion"
 import { useRef } from "react"
+import { motion, useInView, useReducedMotion } from "framer-motion"
+import { Deploy, Section, SectionHead, CountUp } from "@/components/chrome"
+import { CAPABILITIES, CORE_COMPETENCIES } from "@/lib/site-data"
 
-const skillCategories = [
-  {
-    title: "Frontend",
-    skills: [
-      { name: "Angular(All versions)", level: 85, color: "from-blue-500 to-blue-600" },
-      { name: "TypeScript", level: 90, color: "from-blue-500 to-blue-600" },
-      { name: "HTML/CSS", level: 80, color: "from-orange-500 to-orange-600" },
-      { name: "JavaScript", level: 80, color: "from-orange-500 to-orange-600" },
-      { name: "d3.js", level: 70, color: "from-orange-500 to-orange-600" },
-      { name: "Pixi.js", level: 70, color: "from-orange-500 to-orange-600" },
-    ],
-  },
-  {
-    title: "Backend",
-    skills: [
-      { name: "Node.js", level: 70, color: "from-green-500 to-green-600" },
-      { name: "Go Lang", level: 40, color: "from-yellow-500 to-yellow-600" },
-      { name: "Java", level: 60, color: "from-red-500 to-red-600" },
-      { name: "PostgreSQL", level: 85, color: "from-blue-500 to-blue-600" },
-      { name: "MongoDB", level: 60, color: "from-green-500 to-green-600" },
-    ],
-  },
-  {
-    title: "DevOps & Tools",
-    skills: [
-      { name: "Docker", level: 85, color: "from-blue-500 to-blue-600" },
-      { name: "AWS", level: 80, color: "from-orange-500 to-orange-600" },
-      { name: "Git", level: 95, color: "from-red-500 to-red-600" },
-      { name: "CI/CD", level: 85, color: "from-purple-500 to-purple-600" },
-    ],
-  },
-]
+/**
+ * Capability banks.
+ *
+ * Levels are drawn as segmented signal meters rather than smooth progress bars —
+ * discrete cells read as an instrument gauge, and they make the difference
+ * between 85 and 90 actually visible instead of a few pixels of gradient.
+ */
 
-export default function Skills() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+const CELLS = 20
+
+function Meter({ level, delay }: { level: number; delay: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: "-40px" })
+  const reduced = useReducedMotion()
+  const lit = Math.round((level / 100) * CELLS)
 
   return (
-    <section id="skills" ref={ref} className="py-20 px-6">
-      <div className="container mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16 mt-6"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Skills & Expertise
-            </span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            A comprehensive overview of my technical skills and proficiency levels across different technologies and
-            frameworks.
-          </p>
-        </motion.div>
+    <div ref={ref} className="flex gap-[3px]" aria-hidden="true">
+      {Array.from({ length: CELLS }).map((_, i) => {
+        const on = i < lit
+        // the top two cells of any bank run hot — amber → ice at the ceiling
+        const color = i >= CELLS - 2 ? "var(--ice)" : "var(--sig)"
+        return (
+          <motion.span
+            key={i}
+            initial={{ opacity: 0, scaleY: 0.3 }}
+            animate={inView ? { opacity: 1, scaleY: 1 } : {}}
+            transition={{ delay: reduced ? 0 : delay + i * 0.022, duration: 0.25 }}
+            className="h-3.5 flex-1 origin-bottom"
+            style={{
+              background: on ? color : "var(--panel-3)",
+              boxShadow: on && i >= lit - 1 ? `0 0 7px ${color}` : "none",
+              opacity: on ? 1 : 0.5,
+            }}
+          />
+        )
+      })}
+    </div>
+  )
+}
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {skillCategories.map((category, categoryIndex) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: categoryIndex * 0.2, duration: 0.6 }}
-              className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
-            >
-              <h3 className="text-2xl font-bold text-white mb-8 text-center">{category.title}</h3>
+export default function Skills() {
+  return (
+    <Section id="skills">
+      <SectionHead
+        index="03"
+        title="CAPABILITY"
+        meta="3 BANKS"
+        blurb="Self-assessed proficiency across the stack. The honest version — the ceiling is where I ship confidently without looking things up."
+      />
 
-              <div className="space-y-6">
-                {category.skills.map((skill, skillIndex) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{
-                      delay: categoryIndex * 0.2 + skillIndex * 0.1,
-                      duration: 0.6,
-                    }}
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-white font-medium">{skill.name}</span>
-                      <span className="text-gray-400 text-sm">{skill.level}%</span>
-                    </div>
-
-                    <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={isInView ? { width: `${skill.level}%` } : {}}
-                        transition={{
-                          delay: categoryIndex * 0.2 + skillIndex * 0.1 + 0.3,
-                          duration: 1,
-                          ease: "easeOut",
-                        }}
-                        className={`h-full bg-gradient-to-r ${skill.color} rounded-full relative`}
-                      >
-                        <div className="absolute inset-0 bg-white/20 animate-pulse" />
-                      </motion.div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Skills Radar Chart Alternative */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.8, duration: 0.8 }}
-          className="mt-16 p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
-        >
-          <h3 className="text-2xl font-bold text-white mb-8 text-center">Core Competencies</h3>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { name: "Frontend Development", level: 95, icon: "🎨" },
-              { name: "Team Leadership", level: 90, icon: "👥" },
-              { name: "System Architecture", level: 85, icon: "🏗️" },
-              { name: "Problem Solving", level: 95, icon: "🧩" },
-            ].map((competency, index) => (
-              <motion.div
-                key={competency.name}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ delay: 1 + index * 0.1, duration: 0.6 }}
-                className="text-center p-6 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-white/10"
+      <div className="grid gap-5 lg:grid-cols-3">
+        {CAPABILITIES.map((bank, bi) => (
+          <Deploy key={bank.bank} delay={bi * 0.08}>
+            <div className="bracket h-full p-5 md:p-6">
+              <div
+                className="mb-6 flex items-center justify-between border-b pb-3"
+                style={{ borderColor: "var(--rule)" }}
               >
-                <div className="text-4xl mb-4">{competency.icon}</div>
-                <h4 className="text-white font-semibold mb-2">{competency.name}</h4>
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  {competency.level}%
-                </div>
-              </motion.div>
+                <h3 className="font-display text-sm font-600 uppercase tracking-[0.2em] text-[var(--txt)]">
+                  {bank.bank}
+                </h3>
+                <span className="label label-sig tnum">{bank.code}</span>
+              </div>
+
+              <ul className="space-y-5">
+                {bank.items.map((s, si) => (
+                  <li key={s.name}>
+                    <div className="mb-2 flex items-baseline justify-between gap-3">
+                      <span className="text-xs text-[var(--txt-dim)]">{s.name}</span>
+                      <span className="tnum text-[11px] font-medium text-[var(--sig)]">
+                        <CountUp to={s.level} duration={900} />
+                        <span className="text-[var(--sig-dim)]">%</span>
+                      </span>
+                    </div>
+                    <Meter level={s.level} delay={bi * 0.08 + si * 0.06} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Deploy>
+        ))}
+      </div>
+
+      {/* core competencies as a dial row */}
+      <Deploy delay={0.1}>
+        <div className="bracket mt-5 p-5 md:p-7">
+          <div
+            className="mb-7 flex items-center gap-3 border-b pb-3"
+            style={{ borderColor: "var(--rule)" }}
+          >
+            <h3 className="font-display text-sm font-600 uppercase tracking-[0.2em] text-[var(--txt)]">
+              CORE COMPETENCIES
+            </h3>
+            <span className="h-px flex-1" style={{ background: "var(--rule)" }} />
+            <span className="label">NON-TECHNICAL INCLUDED</span>
+          </div>
+
+          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+            {CORE_COMPETENCIES.map((c, i) => (
+              <Dial key={c.name} name={c.name} level={c.level} code={c.code} delay={i * 0.08} />
             ))}
           </div>
-        </motion.div>
+        </div>
+      </Deploy>
+    </Section>
+  )
+}
+
+/* ---------------------------------- dial ---------------------------------- */
+
+function Dial({
+  name,
+  level,
+  code,
+  delay,
+}: {
+  name: string
+  level: number
+  code: string
+  delay: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: "-40px" })
+  const reduced = useReducedMotion()
+
+  const R = 34
+  // 270° sweep, like a real gauge rather than a full ring
+  const sweep = 0.75
+  /**
+   * Rounded to 3dp because these land in SSR'd SVG attributes. Math.sin/cos
+   * disagree in the last bits between Node and the browser, so the raw values
+   * render as 5.358983848622458 on the server and ...465 on the client, and
+   * React throws the hydrated tree away over it.
+   */
+  const r3 = (n: number) => Number(n.toFixed(3))
+  const C = r3(2 * Math.PI * R)
+  const arc = r3(C * sweep)
+
+  return (
+    <div ref={ref} className="flex flex-col items-center text-center">
+      <div className="relative h-24 w-24">
+        <svg viewBox="0 0 80 80" className="h-full w-full -rotate-[135deg]">
+          <circle
+            cx="40"
+            cy="40"
+            r={R}
+            fill="none"
+            stroke="var(--panel-3)"
+            strokeWidth="4"
+            strokeDasharray={`${arc} ${C}`}
+            strokeLinecap="butt"
+          />
+          <motion.circle
+            cx="40"
+            cy="40"
+            r={R}
+            fill="none"
+            stroke="var(--sig)"
+            strokeWidth="4"
+            strokeLinecap="butt"
+            strokeDasharray={`${arc} ${C}`}
+            initial={{ strokeDashoffset: arc }}
+            animate={inView ? { strokeDashoffset: arc * (1 - level / 100) } : {}}
+            transition={{ duration: reduced ? 0 : 1.1, delay, ease: [0.22, 1, 0.36, 1] }}
+            style={{ filter: "drop-shadow(0 0 5px var(--sig-glow))" }}
+          />
+          {/* tick marks around the sweep */}
+          {Array.from({ length: 10 }).map((_, i) => {
+            const a = (i / 9) * sweep * 2 * Math.PI
+            const x1 = r3(40 + Math.cos(a) * (R + 6))
+            const y1 = r3(40 + Math.sin(a) * (R + 6))
+            const x2 = r3(40 + Math.cos(a) * (R + 9))
+            const y2 = r3(40 + Math.sin(a) * (R + 9))
+            return (
+              <line
+                key={i}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="var(--rule-strong)"
+                strokeWidth="1"
+              />
+            )
+          })}
+        </svg>
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="font-display text-xl font-700 text-[var(--sig)]">
+            <CountUp to={level} duration={1100} />
+          </span>
+          <span className="label tnum mt-0.5 opacity-50">{code}</span>
+        </div>
       </div>
-    </section>
+
+      <p className="mt-3 text-xs leading-snug text-[var(--txt-dim)]">{name}</p>
+    </div>
   )
 }

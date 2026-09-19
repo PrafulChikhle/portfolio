@@ -1,161 +1,169 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { Code, Users, Zap, Award } from "lucide-react";
+import { Deploy, Section, SectionHead, CountUp } from "@/components/chrome"
+import { OPERATOR, SERVICE_LOG } from "@/lib/site-data"
 
-const milestones = [
-  {
-    year: "2015",
-    title: "Assistant System Engineer",
-    subTitle: "Tata Consultancy Services Ltd, Pune",
-    description:
-      "Began career as a Junior Java Developer, focusing on Core Java and Spring Framework.",
-    icon: Zap,
-  },
-  {
-    year: "2017",
-    title: "System Engineer",
-    subTitle: "Digitate, Pune",
-    description:
-      "Led full-stack development initiatives, specializing in both frontend Angular development and backend Spring Cloud microservices, with a strong focus on application security.",
-    icon: Zap,
-  },
-  {
-    year: "2018",
-    title: "IT Analyst",
-    subTitle: "Digitate, Pune",
-    description:
-      "Led full-stack development initiatives for enterprise applications, focusing on UI platform development, self-service solutions, and cross-browser compatibility.",
-    icon: Zap,
-  },
-  {
-    year: "2021",
-    title: "Assistant Consultant",
-    subTitle: "Digitate, Pune",
-    description:
-      "Leading digital transformation initiatives and mentoring developers",
-    icon: Zap,
-  },
-  {
-    year: "2022",
-    title: "Senior Software Engineer",
-    subTitle: "Siemens Technology And Services Private Limited, Pune",
-    description:
-      "Architecting and developing comprehensive solutions for digital building management and user onboarding, combining advanced visualization technologies with streamlined user experiences.",
-    icon: Zap,
-  },
-];
+/**
+ * Profile. Two columns of unequal weight: the narrative on the left, a
+ * specification table on the right — the same way a real datasheet pairs prose
+ * with a parameter block.
+ */
+
+const SPEC = [
+  { k: "DESIGNATION", v: OPERATOR.role },
+  { k: "POSTED TO", v: OPERATOR.employer },
+  { k: "GRADE", v: OPERATOR.rank },
+  { k: "STATION", v: OPERATOR.station },
+  { k: "COMMISSIONED", v: String(OPERATOR.since) },
+  { k: "PRIMARY", v: "Angular · TypeScript" },
+  { k: "SECONDARY", v: "D3 · PixiJS · WebGL" },
+  { k: "SUBSYSTEMS", v: "Node · Go · PostgreSQL" },
+  { k: "CLEARANCE", v: "Staff / Architect" },
+]
 
 export default function About() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section id="about" ref={ref} className="py-20 px-6">
-      <div className="container mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16 space-y-6 mt-6"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              About Me
-            </span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            I'm a passionate software engineer and technical lead with over 10
-            years of experience in building scalable web applications and
-            leading high-performing development teams.
-          </p>
-        </motion.div>
+    <Section id="about">
+      <SectionHead
+        index="01"
+        title="PROFILE"
+        meta="OPERATOR RECORD"
+        blurb="Eleven years building the layer where people meet complicated systems — and the component platforms that let other teams do the same."
+      />
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Story */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="space-y-6"
-          >
-            <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <h3 className="text-2xl font-bold text-white mb-4">My Story</h3>
-              <p className="text-gray-300 leading-relaxed mb-4">
-                My journey in software development began with a curiosity about
-                how things work behind the scenes. What started as a hobby
-                quickly became a passion, leading me to specialize in modern web
-                technologies and team leadership.
-              </p>
-              <p className="text-gray-300 leading-relaxed">
-                Today, I focus on creating exceptional user experiences using
-                Angular, developing robust data setup applications, and
-                mentoring the next generation of developers. I believe in
-                writing clean, maintainable code and fostering collaborative
-                team environments.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-6 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                <div className="text-3xl font-bold text-blue-400 mb-2">50+</div>
-                <div className="text-gray-300">Projects Completed</div>
+      <div className="grid gap-8 lg:grid-cols-12">
+        {/* narrative */}
+        <div className="lg:col-span-7">
+          <Deploy from="left">
+            <article className="bracket p-6 md:p-8">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="label label-sig">LOG ENTRY</span>
+                <span className="h-px flex-1" style={{ background: "var(--rule)" }} />
               </div>
-              <div className="p-6 rounded-xl bg-purple-500/10 border border-purple-500/20">
-                <div className="text-3xl font-bold text-purple-400 mb-2">
-                  9+
-                </div>
-                <div className="text-gray-300">Years Experience</div>
-              </div>
-            </div>
-          </motion.div>
 
-          {/* Timeline */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="space-y-8"
-          >
-            {milestones.map((milestone, index) => (
-              <motion.div
-                key={milestone.year}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.6 + index * 0.1, duration: 0.6 }}
-                className="relative flex items-start space-x-4"
+              <p className="text-sm leading-[1.85] text-[var(--txt-dim)] md:text-[15px]">
+                It started with wanting to know what was happening behind the screen.
+                That curiosity turned into eleven years of shipping enterprise
+                frontends — first as the engineer writing the widgets, then as the
+                one deciding how the platform underneath them should be shaped.
+              </p>
+
+              <p className="mt-5 text-sm leading-[1.85] text-[var(--txt-dim)] md:text-[15px]">
+                Most of my work lives where the data is genuinely hard: network graphs
+                dense enough to need WebGL, floorplan editors running on a PIXI canvas,
+                batch operations streaming in over MQTT, configuration surfaces with more
+                states than any mockup ever anticipates. The interesting problem is never
+                the component — it is keeping the thing legible at scale.
+              </p>
+
+              <p className="mt-5 text-sm leading-[1.85] text-[var(--txt-dim)] md:text-[15px]">
+                These days I split my time between architecture decisions, code review,
+                and making sure the engineers around me have a platform worth building
+                on. I care about clean, maintainable code and about teams where people
+                can actually do their best work.
+              </p>
+
+              <div
+                className="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4 border-t pt-6"
+                style={{ borderColor: "var(--rule)" }}
               >
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                  <milestone.icon size={20} className="text-white" />
+                <div>
+                  <span className="font-display text-3xl font-700 text-[var(--sig)]">
+                    <CountUp to={11} />+
+                  </span>
+                  <span className="label mt-1 block">Years in service</span>
                 </div>
-                <div className="flex-1 pb-8">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-sm font-bold text-blue-400">
-                      {milestone.year}
-                    </span>
-                    <div className="h-px bg-gradient-to-r from-blue-400 to-transparent flex-1" />
+                <div>
+                  <span className="font-display text-3xl font-700 text-[var(--sig)]">
+                    <CountUp to={50} />+
+                  </span>
+                  <span className="label mt-1 block">Modules shipped</span>
+                </div>
+                <div>
+                  <span className="font-display text-3xl font-700 text-[var(--ice)]">
+                    <CountUp to={SERVICE_LOG.length} />
+                  </span>
+                  <span className="label mt-1 block">Postings</span>
+                </div>
+              </div>
+            </article>
+          </Deploy>
+        </div>
+
+        {/* spec table */}
+        <div className="lg:col-span-5">
+          <Deploy from="right" delay={0.08}>
+            <div className="bracket">
+              <div
+                className="flex items-center justify-between border-b px-4 py-2.5"
+                style={{ borderColor: "var(--rule)" }}
+              >
+                <span className="label label-sig">SPECIFICATION</span>
+                <span className="label tnum">
+                  {String(SPEC.length).padStart(2, "0")} PARAMS
+                </span>
+              </div>
+
+              <dl>
+                {SPEC.map((row, i) => (
+                  <div
+                    key={row.k}
+                    className="group flex items-baseline gap-4 border-b px-4 py-3 transition-colors last:border-b-0 hover:bg-[rgba(255,176,0,0.04)]"
+                    style={{ borderColor: "var(--rule-soft)" }}
+                  >
+                    <dt className="label tnum w-6 shrink-0 opacity-40">
+                      {String(i).padStart(2, "0")}
+                    </dt>
+                    <dt className="label w-28 shrink-0">{row.k}</dt>
+                    <dd className="flex-1 text-right text-xs text-[var(--txt)] transition-colors group-hover:text-[var(--sig)] md:text-[13px]">
+                      {row.v}
+                    </dd>
                   </div>
-                  <h4 className="text-lg font-semibold text-white mb-2">
-                    {milestone.title}
-                  </h4>
-                  <h5 className="text-sm font-semibold text-white mb-2">
-                    {milestone.subTitle}
-                  </h5>
-                  <p
-                    className="text-gray-300 text-sm"
-                    dangerouslySetInnerHTML={{ __html: milestone.description }}
-                  ></p>
-                </div>
-                {index < milestones.length - 1 && (
-                  <div className="absolute left-6 top-12 w-px h-16 bg-gradient-to-b from-blue-500/50 to-purple-500/50" />
-                )}
-              </motion.div>
-            ))}
-          </motion.div>
+                ))}
+              </dl>
+            </div>
+          </Deploy>
+
+          {/* a small radar, purely atmospheric but on-concept */}
+          <Deploy from="right" delay={0.16}>
+            <div className="bracket mt-6 flex items-center gap-5 p-5">
+              <div
+                className="relative h-20 w-20 shrink-0 rounded-full border"
+                style={{ borderColor: "var(--rule-strong)" }}
+              >
+                <span
+                  className="absolute inset-[22%] rounded-full border"
+                  style={{ borderColor: "var(--rule)" }}
+                />
+                <span
+                  className="absolute left-1/2 top-1/2 h-px w-full -translate-x-1/2 -translate-y-1/2"
+                  style={{ background: "var(--rule)" }}
+                />
+                <span
+                  className="absolute left-1/2 top-1/2 h-full w-px -translate-x-1/2 -translate-y-1/2"
+                  style={{ background: "var(--rule)" }}
+                />
+                <span
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background:
+                      "conic-gradient(from 0deg, transparent 0deg, rgba(255,176,0,0.28) 40deg, transparent 60deg)",
+                    animation: "radar 4s linear infinite",
+                  }}
+                />
+              </div>
+              <div>
+                <p className="label label-sig">CURRENT POSTING</p>
+                <p className="mt-1.5 text-xs leading-relaxed text-[var(--txt-dim)]">
+                  {SERVICE_LOG[0].position}
+                  <br />
+                  <span className="text-[var(--txt-faint)]">{SERVICE_LOG[0].company}</span>
+                </p>
+              </div>
+            </div>
+          </Deploy>
         </div>
       </div>
-    </section>
-  );
+    </Section>
+  )
 }

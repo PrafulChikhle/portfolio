@@ -1,281 +1,225 @@
 "use client"
 
-import type React from "react"
+import { useState } from "react"
+import { Deploy, Section, SectionHead } from "@/components/chrome"
+import Terminal from "@/components/console/terminal"
+import { OPERATOR } from "@/lib/site-data"
 
-import { motion } from "framer-motion"
-import { useInView } from "framer-motion"
-import { useRef, useState } from "react"
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send, Instagram } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 
-const contactInfo = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: "prafulchikhle20@example.com",
-    href: "mailto:prafulchikhle20@example.com",
-  },
-  {
-    icon: Phone,
-    label: "Phone",
-    value: "+91 8989118814",
-    href: "tel:+918989118814",
-  },
-  {
-    icon: MapPin,
-    label: "Location",
-    value: "Pune, India",
-    href: "#",
-  },
+/**
+ * Uplink.
+ *
+ * The form is deliberately honest: this is a static export with no backend, so
+ * "send" composes a mailto: rather than pretending to POST somewhere and
+ * showing a fake success toast. The terminal beside it is the real interactive
+ * surface.
+ */
+
+const CHANNELS = [
+  // Dossier leads — it is what most visitors are actually after.
+  { k: "DOSSIER", v: "resume.pdf ↓", href: OPERATOR.resume },
+  { k: "MAIL", v: OPERATOR.email, href: `mailto:${OPERATOR.email}` },
+  { k: "VOICE", v: OPERATOR.phone, href: `tel:${OPERATOR.phone.replace(/\s/g, "")}` },
+  { k: "STATION", v: OPERATOR.station, href: null },
+  { k: "LINKEDIN", v: "praful-chikhle", href: OPERATOR.links.linkedin },
+  { k: "MEDIUM", v: "@prafulchikhle2050", href: OPERATOR.links.medium },
+  { k: "INSTAGRAM", v: "praful_pr17", href: OPERATOR.links.instagram },
 ]
 
-const socialLinks = [
-  {
-    icon: Linkedin,
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/praful-chikhle-29010486/",
-    color: "hover:text-blue-400",
-  },
-  {
-    icon: Instagram,
-    label: "Instagram",
-    href: "https://twitter.com",
-    color: "hover:text-blue-400",
-  },
-]
+function Field({
+  id,
+  label,
+  value,
+  onChange,
+  type = "text",
+  rows,
+  required,
+}: {
+  id: string
+  label: string
+  value: string
+  onChange: (v: string) => void
+  type?: string
+  rows?: number
+  required?: boolean
+}) {
+  const shared =
+    "w-full bg-[var(--panel)] px-3 py-2.5 text-xs text-[var(--txt)] outline-none transition-colors placeholder:text-[var(--txt-faint)] focus:border-[var(--sig)]"
+  return (
+    <label htmlFor={id} className="block">
+      <span className="label mb-1.5 block">
+        {label}
+        {required && <span className="text-[var(--sig)]"> *</span>}
+      </span>
+      {rows ? (
+        <textarea
+          id={id}
+          rows={rows}
+          required={required}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${shared} resize-none border`}
+          style={{ borderColor: "var(--rule)" }}
+        />
+      ) : (
+        <input
+          id={id}
+          type={type}
+          required={required}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${shared} border`}
+          style={{ borderColor: "var(--rule)" }}
+        />
+      )}
+    </label>
+  )
+}
 
 export default function Contact() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [subject, setSubject] = useState("")
+  const [message, setMessage] = useState("")
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const send = (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    })
-    setIsSubmitting(false)
+    const body = `${message}\n\n— ${name} (${email})`
+    window.location.href = `mailto:${OPERATOR.email}?subject=${encodeURIComponent(
+      subject || "Uplink from avionics console"
+    )}&body=${encodeURIComponent(body)}`
   }
 
   return (
-    <section id="contact" ref={ref} className="py-20 px-6">
-      <div className="container mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16 mt-6"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Get In Touch
-            </span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Ready to collaborate on your next project? Let's discuss how we can work together to bring your ideas to
-            life.
-          </p>
-        </motion.div>
+    <Section id="contact">
+      <SectionHead
+        index="06"
+        title="UPLINK"
+        meta="CHANNEL OPEN"
+        blurb="Hiring, comparing notes on visualisation architecture, or just want to argue about where computation belongs — the channel is open."
+      />
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Contact Information */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="space-y-8"
-          >
-            <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <h3 className="text-2xl font-bold text-white mb-6">Contact Information</h3>
-
-              <div className="space-y-6">
-                {contactInfo.map((info, index) => (
-                  <motion.a
-                    key={info.label}
-                    href={info.href}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ delay: 0.4 + index * 0.1, duration: 0.6 }}
-                    className="flex items-center space-x-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
-                  >
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <info.icon size={20} className="text-white" />
-                    </div>
-                    <div>
-                      <div className="text-gray-400 text-sm">{info.label}</div>
-                      <div className="text-white font-medium">{info.value}</div>
-                    </div>
-                  </motion.a>
-                ))}
+      <div className="grid gap-5 lg:grid-cols-12">
+        {/* channels + form */}
+        <div className="lg:col-span-5">
+          <Deploy from="left">
+            <div className="bracket">
+              <div
+                className="flex items-center justify-between border-b px-4 py-2.5"
+                style={{ borderColor: "var(--rule)" }}
+              >
+                <span className="label label-sig">CHANNELS</span>
+                <span className="label tnum">{CHANNELS.length}</span>
               </div>
-            </div>
 
-            {/* Social Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
-            >
-              <h3 className="text-xl font-bold text-white mb-6">Follow Me</h3>
-              <div className="flex space-x-4">
-                {socialLinks.map((social, index) => (
-                  <motion.a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 0.8 + index * 0.1, duration: 0.6 }}
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-gray-400 ${social.color} transition-all duration-300`}
-                  >
-                    <social.icon size={20} />
-                    <span className="sr-only">{social.label}</span>
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.4, duration: 0.8 }}
-          >
-            <form
-              onSubmit={handleSubmit}
-              className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
-            >
-              <h3 className="text-2xl font-bold text-white mb-6">Send Message</h3>
-
-              <div className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                      Name
-                    </label>
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                      Email
-                    </label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
-                    Subject
-                  </label>
-                  <Input
-                    id="subject"
-                    name="subject"
-                    type="text"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
-                    placeholder="Project discussion"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                    Message
-                  </label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows={6}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20 resize-none"
-                    placeholder="Tell me about your project..."
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium py-3 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Sending...</span>
-                    </div>
+              <dl>
+                {CHANNELS.map((c) => {
+                  const inner = (
+                    <>
+                      <dt className="label w-24 shrink-0">{c.k}</dt>
+                      <dd className="flex-1 truncate text-right text-xs text-[var(--txt-dim)] transition-colors group-hover:text-[var(--sig)]">
+                        {c.v}
+                      </dd>
+                    </>
+                  )
+                  return c.href ? (
+                    <a
+                      key={c.k}
+                      href={c.href}
+                      target={c.href.startsWith("http") ? "_blank" : undefined}
+                      rel={c.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      {...(c.k === "DOSSIER" && c.href.startsWith("/")
+                        ? { download: "" }
+                        : {})}
+                      data-target
+                      data-label={c.k}
+                      className="group flex items-baseline gap-4 border-b px-4 py-3 last:border-b-0 hover:bg-[rgba(255,176,0,0.04)]"
+                      style={{ borderColor: "var(--rule-soft)" }}
+                    >
+                      {inner}
+                    </a>
                   ) : (
-                    <div className="flex items-center justify-center space-x-2">
-                      <Send size={18} />
-                      <span>Send Message</span>
+                    <div
+                      key={c.k}
+                      className="group flex items-baseline gap-4 border-b px-4 py-3 last:border-b-0"
+                      style={{ borderColor: "var(--rule-soft)" }}
+                    >
+                      {inner}
                     </div>
-                  )}
-                </Button>
+                  )
+                })}
+              </dl>
+            </div>
+          </Deploy>
+
+          <Deploy from="left" delay={0.08}>
+            <form onSubmit={send} className="bracket mt-5 p-5">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="label label-sig">COMPOSE</span>
+                <span className="h-px flex-1" style={{ background: "var(--rule)" }} />
               </div>
+
+              <div className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field id="c-name" label="CALLSIGN" value={name} onChange={setName} required />
+                  <Field
+                    id="c-email"
+                    label="RETURN ADDR"
+                    type="email"
+                    value={email}
+                    onChange={setEmail}
+                    required
+                  />
+                </div>
+                <Field id="c-subject" label="SUBJECT" value={subject} onChange={setSubject} />
+                <Field
+                  id="c-message"
+                  label="PAYLOAD"
+                  value={message}
+                  onChange={setMessage}
+                  rows={5}
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                data-target
+                data-label="COMPOSE MAIL"
+                className="sweep group mt-5 w-full border px-5 py-3 text-[11px] tracking-[0.2em] transition-colors"
+                style={{ borderColor: "var(--sig)", color: "var(--sig)" }}
+              >
+                TRANSMIT
+                <span className="ml-3 inline-block transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              </button>
+
+              <p className="label mt-3 leading-relaxed">
+                No backend here — this opens your mail client with the message
+                pre-filled. Nothing is sent anywhere else.
+              </p>
             </form>
-          </motion.div>
+          </Deploy>
         </div>
 
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 1, duration: 0.8 }}
-          className="text-center mt-16 pt-8 border-t border-white/10"
-        >
-          <p className="text-gray-400">
-            © {new Date().getFullYear()} Praful Chikhle. Built with Next.js and Tailwind CSS.
-          </p>
-        </motion.div>
+        {/* terminal */}
+        <div className="lg:col-span-7">
+          <Deploy from="right" delay={0.06} className="h-full">
+            <Terminal />
+          </Deploy>
+        </div>
       </div>
-    </section>
+
+      {/* footer */}
+      <footer
+        className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 border-t pt-6"
+        style={{ borderColor: "var(--rule)" }}
+      >
+        <span className="label">© {new Date().getFullYear()} {OPERATOR.callsign}</span>
+        <span className="label">BUILT WITH NEXT.JS · ONE SHADER · NO UI KIT</span>
+        <span className="label ml-auto">AVIONICS v20.50.1</span>
+      </footer>
+    </Section>
   )
 }
