@@ -6,11 +6,30 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+        display: ["var(--font-display)", "var(--font-mono)", "monospace"],
+      },
+      // numeric aliases so weight reads as weight in the markup
+      fontWeight: {
+        "300": "300",
+        "400": "400",
+        "500": "500",
+        "600": "600",
+        "700": "700",
+      },
       colors: {
+        void: "var(--void)",
+        panel: "var(--panel)",
+        sig: "var(--sig)",
+        ice: "var(--ice)",
+        alert: "var(--alert)",
+
+        // shadcn compat
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -44,55 +63,11 @@ const config: Config = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
-      animation: {
-        "gradient-x": "gradient-x 15s ease infinite",
-        "gradient-y": "gradient-y 15s ease infinite",
-        "gradient-xy": "gradient-xy 15s ease infinite",
-      },
-      keyframes: {
-        "gradient-y": {
-          "0%, 100%": {
-            transform: "translateY(-50%)",
-          },
-          "50%": {
-            transform: "translateY(50%)",
-          },
-        },
-        "gradient-x": {
-          "0%, 100%": {
-            transform: "translateX(-50%)",
-          },
-          "50%": {
-            transform: "translateX(50%)",
-          },
-        },
-        "gradient-xy": {
-          "0%, 100%": {
-            transform: "translate(-50%, -50%)",
-          },
-          "25%": {
-            transform: "translate(50%, -50%)",
-          },
-          "50%": {
-            transform: "translate(50%, 50%)",
-          },
-          "75%": {
-            transform: "translate(-50%, 50%)",
-          },
-        },
+        md: "calc(var(--radius) - 1px)",
+        sm: "1px",
       },
     },
   },
